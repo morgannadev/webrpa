@@ -1,0 +1,1 @@
+Compress-Archive -LiteralPath . -DestinationPath "WebRPA.zip" -Force
