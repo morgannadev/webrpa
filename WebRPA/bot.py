@@ -1,12 +1,15 @@
 # Import for the Web Bot
 from botcity.web import WebBot, Browser, By
+from botcity.web.parsers import table_to_dict
 
 # Import for integration with BotCity Maestro SDK
 from botcity.maestro import *
 
+# Import pandas para transformar em csv
+import pandas
+
 # Disable errors if we are not connected to Maestro
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
-
 
 def main():
     # Runner passes the server url, the id of the task being executed,
@@ -30,10 +33,26 @@ def main():
     bot.driver_path = r"C:\Users\Administrator\Documents\Projects\webrpa\WebRPA\resources\geckodriver.exe"
 
     # Opens the BotCity website.
-    bot.browse("https://www.botcity.dev")
+    bot.browse("https://buscacepinter.correios.com.br/app/endereco/index.php")
 
     # Implement here your logic...
-    ...
+    # value_ = bot.find_element("", By.CLASS_NAME)
+    campo_endereco = bot.find_element("endereco", By.ID)
+    campo_endereco.send_keys("Avenida Brasil")
+
+    bot.wait(1000)
+
+    # botao_buscar = bot.find_element("btn_pesquisar", By.ID)
+    # botao_buscar.click()
+    bot.enter()
+
+    tabela_enderecos = bot.find_element("resultado-DNEC", By.ID)
+    lista_enderecos = table_to_dict(tabela_enderecos)
+    for endereco in lista_enderecos:
+        print(endereco)
+    
+    data_frame = pandas.DataFrame(lista_enderecos)
+    data_frame.to_csv('test_pandas.csv')
 
     # Wait 3 seconds before closing
     bot.wait(3000)
